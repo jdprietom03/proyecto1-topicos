@@ -158,15 +158,15 @@ yarl==1.9.2
 
 En la presente sección se mostrara la arquitectura de referencia recomendada para el proyecto, un primer planteamiento de esta arquitectura, y finalmente, la arquitectura final y los servicios de Amazon Web Services (AWS) y Google Cloud Platform (GCP) empleados para el despliegue eficiente y escalable.
 
-![Arquitectura de referencia recomendad para el proyecto.](Proyecto%20No%201%20Name%20Node%209c9a5388a924499ebd9b7dfe63096fc1/arquiReferencia.png)
+![Arquitectura de referencia recomendad para el proyecto.](https://raw.githubusercontent.com/jdprietom03/proyecto1-topicos/main/docs/arquiReferencia.png)
 
 Arquitectura de referencia recomendad para el proyecto.
 
-![Primer planteamiento de la arquitectura para el proyecto.](Proyecto%20No%201%20Name%20Node%209c9a5388a924499ebd9b7dfe63096fc1/arquiPrimerPlanteo.jpg)
+![Primer planteamiento de la arquitectura para el proyecto.](https://raw.githubusercontent.com/jdprietom03/proyecto1-topicos/main/docs/arquiPrimerPlanteo.jpg)
 
 Primer planteamiento de la arquitectura para el proyecto.
 
-![Arquitectura final; servicios de AWS y GCP usados.](Proyecto%20No%201%20Name%20Node%209c9a5388a924499ebd9b7dfe63096fc1/arquiFinal.svg)
+![Arquitectura final; servicios de AWS y GCP usados.](https://raw.githubusercontent.com/jdprietom03/proyecto1-topicos/31db7090940f74446dd0fad36da786631e342f19/docs/arquiFinal.svg)
 
 Arquitectura final; servicios de AWS y GCP usados.
 
@@ -240,7 +240,7 @@ response = requests.get(url, json=body)
 print(response.text)
 ```
 
-![Untitled](Proyecto%20No%201%20Name%20Node%209c9a5388a924499ebd9b7dfe63096fc1/Untitled.png)
+![Untitled](https://raw.githubusercontent.com/jdprietom03/proyecto1-topicos/main/docs/nameNode/postmanGet.png)
 
 Nombre
 
@@ -277,7 +277,7 @@ response = requests.get(url, json=body)
 print(response.text)
 ```
 
-![Untitled](Proyecto%20No%201%20Name%20Node%209c9a5388a924499ebd9b7dfe63096fc1/Untitled%201.png)
+![Untitled](https://raw.githubusercontent.com/jdprietom03/proyecto1-topicos/main/docs/nameNode/postmanSearch.png)
 
 Nombre
 
@@ -314,7 +314,7 @@ response = requests.get(url, json=body)
 print(response.text)
 ```
 
-![Untitled](Proyecto%20No%201%20Name%20Node%209c9a5388a924499ebd9b7dfe63096fc1/Untitled%202.png)
+![Untitled](https://raw.githubusercontent.com/jdprietom03/proyecto1-topicos/main/docs/nameNode/postmanList.png)
 
 Nombre
 
@@ -351,7 +351,7 @@ response = requests.get(url, json=body)
 print(response.text)
 ```
 
-![Untitled](Proyecto%20No%201%20Name%20Node%209c9a5388a924499ebd9b7dfe63096fc1/Untitled%203.png)
+![Untitled](https://raw.githubusercontent.com/jdprietom03/proyecto1-topicos/main/docs/nameNode/postmanPut.png)
 
 Nombre
 
