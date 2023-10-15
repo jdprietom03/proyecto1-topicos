@@ -1,163 +1,322 @@
-# Service communication project
+# Proyecto No 1: Data Nodes
 
+# 1. Objetivo
 
-## Course Details
+Diseñar e implementar un sistema de archivos distribuido minimalista.
 
+---
 
-| Information  |                   |
-|--------------|      :-----:      |
-| Name    | Sebastian Guerra       |
-| Email   | jsguerrah@eafit.edu.co |
-| Teacher | Edwin Montoya          |
-| Course  | ST0263                 |
+# 2. Aspectos solucionados y no solucionados
 
-## Description
+- [x]  Operación ‘list files’ funcional.
+- [x]  Operación ‘find file’ funcional.
+- [x]  Operación ‘get file’ funcional.
+- [x]  Operación ‘put files’ funcional.
+- [x]  Un archivo debe de estar en al menos dos (2) Data Nodes.
+- [ ]  Puesta en marcha de Data Node Replica.
+- [ ]  Aquel Data Node que reciba un archivo del cliente tendrá la responsabilidad de transferirlo al Data Node replica.
 
-This project was created to practice both synchronous and asynchronous communication strategies. For this we set up an API that makes available two microservices to list and search for files
+---
 
-The information and parameters of the project criteria are in the teacher's domain. In view of this situation, it remains to say that in this project all the considerations required by the teacher are completely fulfilled.
-## Run by your own
+# 3. Información general del diseño
 
-- Start docker container for RabbitMQ in its respective instance.
+## Sobre los servicios
+
+En esta sección, se explican los servicios implementados para dar solución al reto propuesto, explicado en la sección: 1. Objetivo.
+
+| Nombre del servicio | Rol que desempeña | IP y puertos de escucha |
+| --- | --- | --- |
+| Data Node 1 | Almacena los archivos subidos por los clientes; notifica al Name Node en caso de que un nuevo archivo haya sido creado.  | 3.223.88.22: 50051 & 80 |
+| Data Node 2 | Almacena los archivos subidos por los clientes; notifica al Name Node en caso de que un nuevo archivo haya sido creado.  | 44.208.106.154: 50051 & 80 |
+
+---
+
+# 4. Ambiente de desarrollo
+
+En esta sección se proporciona una visión general fundamental para el desarrollo del proyecto. En ella, se detalla la "Estructura del Código", delineando la organización jerárquica de archivos y directorios que sustenta el proyecto. Además, se exploran aspectos clave de la "Configuración de Parámetros del Proyecto", destacando cómo ajustar y personalizar los elementos esenciales que guiarán el desarrollo y funcionamiento del software.
+
+## Estructura del código
+
+A continuación, exploraremos la disposición de archivos y carpetas en nuestro proyecto. A continuación, se muestra una visión general de cómo se organizan los archivos y las subcarpetas en relación con el directorio principal del proyecto.
+
+```
+DATANODE
+├── README.md
+├── assets
+│   ├── 123.txt
+│   ├── file1.txt
+│   ├── file2.txt
+│   └── test.txt
+└── src
+    ├── IndexClient.py
+    ├── README.md
+    ├── client.py
+    ├── compile.py
+    ├── config
+    ├── main.py
+    ├── protobufs
+    │   ├── __init__.py
+    │   ├── proto
+    │   │   ├── Add2Index.proto
+    │   │   └── FileServices.proto
+    │   └── python
+    │       ├── Add2Index_pb2.py
+    │       ├── Add2Index_pb2.pyi
+    │       ├── Add2Index_pb2_grpc.py
+    │       ├── FileServices_pb2.py
+    │       ├── FileServices_pb2.pyi
+    │       ├── FileServices_pb2_grpc.py
+    │       └── __init__.py
+    ├── requirements.txt
+    └── server
+        ├── __init__.py
+        ├── common
+        │   ├── __init__.py
+        │   └── services.py
+        └── grpc
+            └── server.py
+```
+
+## Configuración de parámetros del proyecto
+
+Para la configuración de los parámetros del proyecto utilizamos un enfoque basado en variables de entorno. Esto nos brinda la flexibilidad necesaria para adaptar nuestro proyecto a diferentes entornos.
+
+A continuación se muestra el contenido de los archivos de configuraciones: ‘.config’ y ‘.env’. Estos archivos controlan los aspectos esenciales de la aplicación.
+
+```
+[PATHS]
+ASSETS_DIR=./../assets
+PROTO_DIR = ./protobufs/proto
+PROTO_FILE_DATA_NODE = ./protobufs/proto/FileServices.proto
+PROTO_FILE_NAME_NODE = ./protobufs/proto/Add2Index.proto
+OUTPUT_DIR = ./protobufs/python
+[RETRY]
+RETRIES_ADD_IP = 10
+```
+
+```
+GRPC_HOST=127.0.0.1:50051
+```
+
+## Paquetes y dependencias
+
+Las dependencias requeridas para la correcta ejecución del software desarrollado son las siguientes:
+
+```python
+grpcio==1.57.0
+grpcio-tools==1.57.0
+protobuf==4.24.2
+pika==1.2.0
+flask==2.0.1
+flask-restful==0.3.9
+python-dotenv==0.17.1
+```
+
+---
+
+# 5. Ambiente de ejecución
+
+## Arquitectura general
+
+En la presente sección se mostrara la arquitectura de referencia recomendada para el proyecto, un primer planteamiento de esta arquitectura, y finalmente, la arquitectura final y los servicios de Amazon Web Services (AWS) y Google Cloud Platform (GCP) empleados para el despliegue eficiente y escalable.
+
+![Arquitectura de referencia recomendad para el proyecto.](https://raw.githubusercontent.com/jdprietom03/proyecto1-topicos/main/docs/arquiReferencia.png)
+
+Arquitectura de referencia recomendad para el proyecto.
+
+![Primer planteamiento de la arquitectura para el proyecto.](https://raw.githubusercontent.com/jdprietom03/proyecto1-topicos/main/docs/arquiPrimerPlanteo.jpg)
+
+Primer planteamiento de la arquitectura para el proyecto.
+
+![Arquitectura final; servicios de AWS y GCP usados.](https://raw.githubusercontent.com/jdprietom03/proyecto1-topicos/31db7090940f74446dd0fad36da786631e342f19/docs/arquiFinal.svg)
+
+Arquitectura final; servicios de AWS y GCP usados.
+
+## Guía de uso
+
+La siguiente guía brindará los pasos a seguir para un correcto funcionamiento y ejecución del software.
+
+### Instalando requisitos previos
+
+Primeramente deberemos de instalar los programas necesarios para la ejecución del proyecto; se instalarán Git y Python y se clonará el repositorio que contiene el código correspondiente.
 
 ```bash
-  docker start rabbit-server
+#instalando git
+sudo apt-get install git
+echo "[x] Git instalado"
+
+#instalando python
+sudo apt install python3
+echo "[x] Python instalado"
+
+#clonando repositorio del codigo
+git clone https://github.com/jdprietom03/proyecto1-topicos
+echo "[x] Repositorio de codigo clonado"
 ```
 
-- Clone the project
+### Instalación de dependencias
+
+Nos dirigiremos a la carpeta con el código correspondiente y crearemos un entorno virtual, accederemos a el e instalaremos las librerías y dependencias correspondientes.
 
 ```bash
-  git clone https://github.com/Jguerra47/jsguerrah-st0263.git
+#dirigiendome al directorio de codigo
+cd proyecto1-topicos/DATANODE
+
+#instalando librerias necesarias
+pip install -r src/requirements.txt
+echo "[x] Librerias necesarias instaladas"
 ```
 
-- Go to the project directory
+### Ejecución del programa
+
+Finalmente podremos ejecutar el programa.
 
 ```bash
-  cd jsguerrah-st0263/reto_2/src
+python3 src/main.py
 ```
 
-- Install dependencies
+## Acciones
 
-```bash
-  pip install -r requirements.txt
+Los siguientes son los endpoints disponibilizados por los Data Nodes y las acciones permitidas por los mismos.  
+
+### [gRPC] ListFiles (service)
+
+Listar todos los archivos presentes en un Data Node.
+
+<aside>
+🌐 [gRPC] 3.223.88.22:50051
+
+</aside>
+
+```python
+import grpc
+from google.protobuf.empty_pb2 import Empty
+import FileService_pb2 as FileServiceStub
+import FileService_pb2_grpc as FileServices_pb2_grpc
+
+address = "3.223.88.22:50051"
+channel = grpc.insecure_channel(address) 
+stub = FileServices_pb2_grpc.FileServiceStub(channel)
+
+request = Empty()
+response = stub.ListFiles(request)
 ```
 
-- Set the environment variables cloning the `.env.example`
+### [gRPC] FindFile (service)
 
-```bash
-  mv config/.env.example config/.env
+Buscar un archivo en un Data Node.
+
+<aside>
+🌐 [gRPC] 3.223.88.22:50051
+
+</aside>
+
+```python
+import grpc
+import FileService_pb2 as FileServiceStub
+import FileService_pb2_grpc as FileServices_pb2_grpc
+
+address = "3.223.88.22:50051"
+channel = grpc.insecure_channel(address) 
+stub = FileServices_pb2_grpc.FileServiceStub(channel)
+
+file_name = "123.txt"
+request = FileServicesStub.FileRequest(file_name)
+response = stub.FindFile(request)
 ```
 
-- Check if stubs are created. If you need to modify the IDL, re-compile it with
+Nombre
 
-```bash
-  python3 compile.py
+**file_name**
+
+Descripción
+
+Nombre del archivo a buscar.
+
+Tipo de dato
+
+*string*
+
+### [gRPC] GetFile (service)
+
+Descargar un archivo remoto ubicado en un Data Node en local.
+
+<aside>
+🌐 [gRPC] 3.223.88.22:50051
+
+</aside>
+
+```python
+import grpc
+import FileService_pb2 as FileServiceStub
+import FileService_pb2_grpc as FileServices_pb2_grpc
+
+address = "3.223.88.22:50051"
+channel = grpc.insecure_channel(address) 
+stub = FileServices_pb2_grpc.FileServiceStub(channel)
+
+file_path = "123.txt"
+request = FileServicesStub.FileRequest(file_name)
+try:
+	response = {
+		"data": stub.GetFile(request),
+		"status": 200
+	}
+except:
+	response = {
+		"status":500
+	}
 ```
 
-- Run the component according to the instance. To know components use `--help` flag
+Nombre
 
-```bash
-  python3 main.py {component}
+**file_path**
+
+Descripción
+
+Ruta al archivo remoto que se encuentra dentro del Data Node.
+
+Tipo de dato
+
+*string*
+
+### [gRPC] PutFile (service)
+
+Subir un archivo local a un Data Node.
+
+<aside>
+🌐 [gRPC] 3.223.88.22:50051
+
+</aside>
+
+```python
+import grpc
+import FileService_pb2 as FileServiceStub
+import FileService_pb2_grpc as FileServices_pb2_grpc
+
+address = "3.223.88.22:50051"
+channel = grpc.insecure_channel(address) 
+stub = FileServices_pb2_grpc.FileServiceStub(channel)
+
+file_path = "123.txt"
+request = FileServicesStub.FileContent(file_name, data=bytes(data))
+response = stub.PutFile(request)
 ```
 
-## Environment Variables
+Nombre
 
-To run this project, you will need to add the following environment variables to your .env file in **config** folder
+**file_path**
 
-`GRPC_HOST`
-`RMQ_HOST`
-`RMQ_PORT`
-`RMQ_USER`
-`RMQ_PASS`
-`RMQ_EXCHANGE`
+**data**
 
-## Directory tree
-```bash
-    reto_2/
-    │
-    ├── src/
-    │   ├── compile.py
-    │   ├── main.py
-    │   ├── requirements.txt
-    │   │
-    │   ├── api_gateway/
-    │   │
-    │   ├── server/
-    │   │   ├── amqp/
-    │   │   ├── common/
-    │   │   └── grpc/
-    │   │
-    │   ├── protobufs/
-    │   │   ├── python/
-    │   │   └── proto/
-    │   │
-    │   └── config/
-    │
-    └── assets/
-        ├── [contenido de assets...]
-```
-## API Gateway Reference
+Descripción
 
-#### Get all items:
+Ruta al archivo local a enviar al Data Node.
 
-```http
-  curl --location '${API_GW_HOST}/list'
-```
+Contenido del archivo local a enviar al Data Node en bytes.
 
-#### Find items by a string:
+Tipo de dato
 
-```http
-  curl --location '${API_GW_HOST}/find/${name}'
-```
+*string*
 
-# Tech description
-
-## Diagram
-
-![CommunicationProjectDiagram](https://github.com/Jguerra47/jsguerrah-st0263/assets/68879896/ad116a72-dc5b-47d7-a1f0-95ee725c235d)
-
-## Development environment
-
-### Language
-- **Python**
-
-### Libraries and packages
-- **grpcio**: 1.57.0
-- **grpcio-tools**: 1.57.0
-- **protobuf**: 4.24.2
-- **pika**: 1.2.0
-- **flask**: 2.0.1
-- **flask-restful**: 0.3.9
-- **python-dotenv**: 0.17.1
-
-## High Level Design and Architecture
-
-The project uses **Flask** as a web framework to create an API. In addition, **gRPC** is used for communication between backend services as well as **AMQP** for message publishing as a retry strategy since `RabbitMq` is used as Message-Oriented Middleware. The code structure suggests a clear separation of responsibilities, with specific files for gateway configuration, gRPC communication, AMQP queue management, and resource and route definition.
-
-### Patterns and practices
-
-- **RPC client**: The project defines an RPC client `AMQPRpcClient` with an AMQP server. This, to simulate a synchronous communication with the MOM.
-
-- **Separation of Responsibilities**: There is a clear distinction between different aspects of the system, such as route management, resources, gRPC communication and AMQP queues.
-
-- **Dependency Management**: `requirements.txt` is used to manage project dependencies.
-
-- **Environment-Based Configuration**: Environment variables are used for configurations, suggesting an environment-based configuration approach.
-
-- **Modular Organization**: The code is organized in a modular fashion with a clear and defined directory structure for recognition of each aspect of the design.
-## Response snapshots
-
-<img width="451" alt="image" src="https://github.com/Jguerra47/jsguerrah-st0263/assets/68879896/bc3bcd09-d8b9-4232-9b9b-f315ec30ff96">
-
-## Check IPs
-Click [here](https://github.com/Jguerra47/jsguerrah-st0263/tree/main/reto_2/src/config)
-
-## Functionality Demo
-Access to a video that explains the project and test it. Click [here](https://drive.google.com/file/d/1lkoMbLLo_4g6_JrnPRfvipHvjW-7xCEZ/view?usp=sharing)
-
-## References
-
-- [RabbitMQ documentation](https://www.rabbitmq.com/getstarted.html)
-- [Python + gRPC](https://www.youtube.com/watch?v=E0CaocyNYKg)
-- [Message-Oriented Middleware](https://www.geeksforgeeks.org/what-is-message-oriented-middleware-mom/)
-- [Flask documentation](https://flask.palletsprojects.com/en/2.3.x/)
+*bytes*
