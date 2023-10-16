@@ -3,7 +3,7 @@ import inquirer
 from tqdm import tqdm
 import time
 from actions import Action
-from proxy_client import APIClient
+from proxy_client import MockClient as APIClient
 from loader import SubscriberSingleton
 import re
 import asyncio
@@ -73,12 +73,12 @@ class CLI:
         grpc_client = FileClient.set_host(response.content[0][0])
 
         await asyncio.gather(
-            self.loader.add(1, "GET Request", lambda: self.__assign(response, grpc_client.get_file(filename)))
+            self.loader.add(3, "GET Request", lambda: self.__assign(response, grpc_client.get_file(filename)))
         )
 
         if response.content["status"] != 500:
-            with open(response.content["data"].name, 'wb') as file:
-                file.write(response.content["data"].data)
+            with open(response.content["filename"], 'wb') as file:
+                file.write(response.content["data"])
 
     def __assign(self, wrapper, content):
         wrapper.content = content
@@ -113,10 +113,9 @@ class CLI:
 
         grpc_client = FileClient.set_host(response.content)
 
-        with open(filename, "rb") as file:
-            await asyncio.gather(
-                self.loader.add(1, "GET Request", lambda: self.__assign(response, grpc_client.put_file(filename, file.read())))
-            )
+        await asyncio.gather(
+            self.loader.add(1, "GET Request", lambda: self.__assign(response, grpc_client.put_file(filename)))
+        )
 
         print(response.content)
 

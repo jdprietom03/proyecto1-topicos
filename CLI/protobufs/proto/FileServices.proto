@@ -28,6 +28,6 @@ message OperationStatus {
 service FileService {
     rpc ListFiles(google.protobuf.Empty) returns (FileList) {}
     rpc FindFile(FileRequest) returns (FileList) {}
-    rpc PutFile(FileContent) returns (OperationStatus) {}
-    rpc GetFile(FileRequest) returns (FileContent) {}
+    rpc PutFile(stream FileContent) returns (OperationStatus) {}
+    rpc GetFile(FileRequest) returns (stream FileContent) {}
 }
