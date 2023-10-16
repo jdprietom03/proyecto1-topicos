@@ -69,15 +69,33 @@ class FileService(FileServices_pb2_grpc.FileServiceServicer):
             else:
                 yield FileServicesStub.FileContent(name=name, data=chunk)
 
-    def PutFile(self, request, context):
-        logging.info("PUT request was received: %s", str(request))
-        code, message, e = Service.putFile(request.name, request.data)
-        if e:
-            context.set_code(grpc.StatusCode.INTERNAL)
-            context.set_details(str(e))
-            logging.error("Error putting file: %s. Error: %s", request.name, str(e))
-        #self.indexClient.addToIndex(path=request.name)
-        return FileServicesStub.OperationStatus(code=code, message=message)
+    def PutFile(self, request_iterator, context):
+        logging.info("PUT request was received ")
+        chunks = []
+        name = ""
+        for chunk in request_iterator:
+            name = chunk.name 
+            chunks.append(chunk.data)
+        
+        logging.info("%s chunks were received in the PUT request", len(chunks))
+        message, exception = Service.putFile(name, chunks)
+
+        if exception is not None:
+            if isinstance(exception, FileNotFoundError):
+                context.set_code(grpc.StatusCode.NOT_FOUND)
+                context.set_details('File not found')
+                logging.warning("File not found: %s", name)
+            elif isinstance(exception, PermissionError):
+                context.set_code(grpc.StatusCode.PERMISSION_DENIED)
+                context.set_details('You are trying to do path traversal. Denied')
+                logging.warning("Path traversal: %s", name)
+            else:
+                context.set_code(grpc.StatusCode.INTERNAL)
+                context.set_details(str(exception))
+                logging.error("Error putting file: %s. Error: %s", name, str(exception))
+            return FileServicesStub.OperationStatus(code=context.code(), message=context.details())
+        else:
+            return FileServicesStub.OperationStatus(code=grpc.StatusCode.OK.value[0], message=message)
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

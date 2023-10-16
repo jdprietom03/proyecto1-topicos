@@ -1,6 +1,7 @@
 import os
 import glob
 import datetime
+from typing import Iterable
 from server import ASSETS_DIR, CHUNK_SIZE
 
 class FileServices:
@@ -43,13 +44,20 @@ class FileServices:
         except (PermissionError, Exception) as e:
             return [], e
 
-    def putFile(self, name: str, data: bytes) -> tuple:
+    def putFile(self, name: str, chunks: Iterable[bytes]) -> tuple:
         try:
             with open(os.path.join(ASSETS_DIR, name), 'wb') as f:
-                f.write(data)
-            return 200, 'File uploaded successfully', None
+                for chunk in chunks:
+                    f.write(chunk)
+            return "File uploaded successfully", None
+        except FileNotFoundError as e:
+            return "File not found", e
+        except PermissionError as e:
+            return "Permission denied", e
+        except IOError as e:
+            return f"IO Error: {str(e)}", e
         except Exception as e:
-            return 500, 'Internal Server Error', e
+            return f"Unexpected error: {str(e)}", e
 
     def getFile(self, name: str) -> tuple:
         try:
