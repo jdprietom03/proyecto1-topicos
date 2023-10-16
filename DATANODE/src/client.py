@@ -3,6 +3,9 @@ import sys
 from google.protobuf.empty_pb2 import Empty
 import protobufs.python.FileServices_pb2 as FileServicesStub
 import protobufs.python.FileServices_pb2_grpc as FileServices_pb2_grpc
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 SERVER_ADDRESS = 'localhost:50051'
 
@@ -13,23 +16,28 @@ class FileClient:
 
     def list_files(self):
         request = Empty()
-        response = self.stub.ListFiles(request)
-        return response
+        return self.stub.ListFiles(request)
 
     def find_file(self, name):
         request = FileServicesStub.FileRequest(name=name)
-        response = self.stub.FindFile(request)
-        return response
+        return self.stub.FindFile(request)
 
     def get_file(self, name):
         request = FileServicesStub.FileRequest(name=name)
-        response = self.stub.GetFile(request)
-        return response
+        file_data = b""
+        chunk_count = 0
+
+        for chunk in self.stub.GetFile(request):
+            chunk_count += 1
+            #print(f"New chunk {chunk_count}:", chunk)
+            file_data += chunk.data
+
+        print(f"Total chunks received: {chunk_count}")
+        return file_data
 
     def put_file(self, name, data):
         request = FileServicesStub.FileContent(name=name, data=bytes(data))
-        response = self.stub.PutFile(request)
-        return response
+        return self.stub.PutFile(request)
 
 def main():
     client = FileClient(SERVER_ADDRESS)
@@ -54,7 +62,7 @@ def main():
     elif action == "get":
         name = input("Enter the name of the file to get: ")
         file_content = client.get_file(name)
-        print(f"File: {file_content.name}, Data: {file_content.data}")
+        #print(f"File: {name}, Data: {file_content}")
 
     elif action == "put":
         name = input("Enter the name of the file to upload: ")
