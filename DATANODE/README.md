@@ -92,6 +92,7 @@ PROTO_FILE_NAME_NODE = ./protobufs/proto/Add2Index.proto
 OUTPUT_DIR = ./protobufs/python
 [RETRY]
 RETRIES_ADD_IP = 10
+CHUNK_SIZE = 1024
 ```
 
 ```
@@ -160,10 +161,10 @@ Nos dirigiremos a la carpeta con el código correspondiente y crearemos un entor
 
 ```bash
 #dirigiendome al directorio de codigo
-cd proyecto1-topicos/DATANODE
+cd proyecto1-topicos/DATANODE/src
 
 #instalando librerias necesarias
-pip install -r src/requirements.txt
+pip install -r requirements.txt
 echo "[x] Librerias necesarias instaladas"
 ```
 
@@ -172,8 +173,15 @@ echo "[x] Librerias necesarias instaladas"
 Finalmente podremos ejecutar el programa.
 
 ```bash
-python3 src/main.py
+python3 main.py
 ```
+
+## Sobre el Streaming de archivos
+Originalmente, el sistema usaba Protocol Buffers sin streaming para la transferencia de archivos a través de gRPC. Esta implementación presentaba limitaciones significativas:
+
+- Límite de tamaño: gRPC, en muchas implementaciones, tiene un límite predeterminado de 4MB por mensaje. Esto significa que, sin streaming, cualquier archivo que superara este tamaño no podría ser transferido sin ajustar este límite, lo que no es siempre deseable.
+- Eficiencia y Uso de Memoria: Transferir archivos grandes en un solo bloque puede ser ineficiente y consumir una cantidad significativa de memoria, ya que todo el archivo debe cargarse en memoria antes de ser enviado.
+- Tiempo de Respuesta: Enviar un archivo grande de una sola vez podría aumentar el tiempo de respuesta, ya que el receptor tendría que esperar a que se complete toda la transferencia antes de poder procesarla.
 
 ## Acciones
 
@@ -239,6 +247,8 @@ Tipo de dato
 
 ### [gRPC] GetFile (service)
 
+`Ahora soporta Streaming!`
+
 Descargar un archivo remoto ubicado en un Data Node en local.
 
 <aside>
@@ -281,6 +291,8 @@ Tipo de dato
 *string*
 
 ### [gRPC] PutFile (service)
+
+`Ahora soporta Streaming!`
 
 Subir un archivo local a un Data Node.
 
