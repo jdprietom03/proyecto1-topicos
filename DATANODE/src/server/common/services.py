@@ -1,7 +1,7 @@
 import os
 import glob
 import datetime
-from server import ASSETS_DIR
+from server import ASSETS_DIR, CHUNK_SIZE
 
 class FileServices:
 
@@ -52,14 +52,13 @@ class FileServices:
             return 500, 'Internal Server Error', e
 
     def getFile(self, name: str) -> tuple:
-
         try:
             validate_path_traversal(name)
             with open(os.path.join(ASSETS_DIR, name), 'rb') as f:
-                data = f.read()
-            return name, data, None
-        except (PermissionError, Exception) as e:
-            return '', b'', e
+                while (chunk := f.read(int(CHUNK_SIZE))):
+                    yield name, chunk, None
+        except (PermissionError, FileNotFoundError, Exception) as e:
+            yield '', b'', e
 
 def validate_path_traversal(name: str):
     abs_path = os.path.abspath(os.path.join(ASSETS_DIR, name))
