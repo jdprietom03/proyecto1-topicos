@@ -19,3 +19,4 @@ config.read(os.path.join(os.path.dirname(__file__), '..', 'config', '.config'))
 
 # Obtiene la ruta de ASSETS_DIR
 ASSETS_DIR = config['PATHS']['ASSETS_DIR']
+CHUNK_SIZE = config['SIZE']['CHUNK_SIZE']

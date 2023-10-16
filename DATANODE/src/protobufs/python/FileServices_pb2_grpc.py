@@ -25,12 +25,12 @@ class FileServiceStub(object):
                 request_serializer=FileServices__pb2.FileRequest.SerializeToString,
                 response_deserializer=FileServices__pb2.FileList.FromString,
                 )
-        self.PutFile = channel.unary_unary(
+        self.PutFile = channel.stream_unary(
                 '/FileService/PutFile',
                 request_serializer=FileServices__pb2.FileContent.SerializeToString,
                 response_deserializer=FileServices__pb2.OperationStatus.FromString,
                 )
-        self.GetFile = channel.unary_unary(
+        self.GetFile = channel.unary_stream(
                 '/FileService/GetFile',
                 request_serializer=FileServices__pb2.FileRequest.SerializeToString,
                 response_deserializer=FileServices__pb2.FileContent.FromString,
@@ -52,7 +52,7 @@ class FileServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def PutFile(self, request, context):
+    def PutFile(self, request_iterator, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -77,12 +77,12 @@ def add_FileServiceServicer_to_server(servicer, server):
                     request_deserializer=FileServices__pb2.FileRequest.FromString,
                     response_serializer=FileServices__pb2.FileList.SerializeToString,
             ),
-            'PutFile': grpc.unary_unary_rpc_method_handler(
+            'PutFile': grpc.stream_unary_rpc_method_handler(
                     servicer.PutFile,
                     request_deserializer=FileServices__pb2.FileContent.FromString,
                     response_serializer=FileServices__pb2.OperationStatus.SerializeToString,
             ),
-            'GetFile': grpc.unary_unary_rpc_method_handler(
+            'GetFile': grpc.unary_stream_rpc_method_handler(
                     servicer.GetFile,
                     request_deserializer=FileServices__pb2.FileRequest.FromString,
                     response_serializer=FileServices__pb2.FileContent.SerializeToString,
@@ -132,7 +132,7 @@ class FileService(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def PutFile(request,
+    def PutFile(request_iterator,
             target,
             options=(),
             channel_credentials=None,
@@ -142,7 +142,7 @@ class FileService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/FileService/PutFile',
+        return grpc.experimental.stream_unary(request_iterator, target, '/FileService/PutFile',
             FileServices__pb2.FileContent.SerializeToString,
             FileServices__pb2.OperationStatus.FromString,
             options, channel_credentials,
@@ -159,7 +159,7 @@ class FileService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/FileService/GetFile',
+        return grpc.experimental.unary_stream(request, target, '/FileService/GetFile',
             FileServices__pb2.FileRequest.SerializeToString,
             FileServices__pb2.FileContent.FromString,
             options, channel_credentials,
