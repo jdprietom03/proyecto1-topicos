@@ -183,6 +183,13 @@ Originalmente, el sistema usaba Protocol Buffers sin streaming para la transfere
 - Eficiencia y Uso de Memoria: Transferir archivos grandes en un solo bloque puede ser ineficiente y consumir una cantidad significativa de memoria, ya que todo el archivo debe cargarse en memoria antes de ser enviado.
 - Tiempo de Respuesta: Enviar un archivo grande de una sola vez podría aumentar el tiempo de respuesta, ya que el receptor tendría que esperar a que se complete toda la transferencia antes de poder procesarla.
 
+**Beneficios del Streaming**
+
+Al adoptar streaming en gRPC, superamos estas limitaciones:
+- Manejo de Archivos Grandes: Al dividir los archivos en chunks, podemos transferir archivos de cualquier tamaño, sin estar restringidos por el límite de 4MB.
+- Eficiencia: El streaming permite una transferencia más eficiente, reduciendo el uso de memoria y permitiendo que el receptor procese los datos a medida que llegan.
+- Resiliencia: El streaming mejora la capacidad de manejar interrupciones y reanudar transferencias.
+
 ## Acciones
 
 Los siguientes son los endpoints disponibilizados por los Data Nodes y las acciones permitidas por los mismos.  
