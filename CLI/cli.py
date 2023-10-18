@@ -126,7 +126,7 @@ class CLI:
 
         unique = [list(set(i[1] for i in response.content))]
 
-        table = tabulate(response.content, headers, tablefmt="pretty")
+        table = tabulate(unique, headers, tablefmt="pretty")
 
         print(table)
 
