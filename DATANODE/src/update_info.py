@@ -3,6 +3,7 @@ import protobufs.python.Add2Index_pb2 as Add2Index_pb2Stub
 import protobufs.python.Add2Index_pb2_grpc as Add2Index_pb2_grpc
 import protobufs.python.FileServices_pb2 as FileServicesStub
 import protobufs.python.FileServices_pb2_grpc as FileServices_pb2_grpc
+from server.common.services import FileServices
 import os
 import configparser
 import urllib.request
@@ -17,8 +18,8 @@ ASSETS_DIR = config['PATHS']['ASSETS_DIR']
 RETRIES = int(config['RETRY']['RETRIES_ADD_IP'])
 
 #Must be environment variables
-NODES_TO_REPLICATE = config['NODES']['NODES_ADDRESSES']
-LEADER_NODE = config['NODES']['LEADER_NODE']
+NODES_TO_REPLICATE = os.getenv('NODES_ADDRESSES').split(',')
+LEADER_NODE = os.getenv('LEADER_NODE')
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -93,8 +94,8 @@ class DataNodeClient:
     def handle_redundancy_new_file(self, path, data):
         #He must send the file to this follower (destination_address).
         #So it must PUT the file. Build the message and send it.
-
-        file_content = FileServicesStub.FileContent(name="extract_from_path", data=data)
+        path = path.split("/")[-1]
+        file_content = FileServicesStub.FileContent(name=path, data=data)
         operation_status = self.stub.PutFile(file_content)
     
     #Pull strategy
@@ -103,9 +104,20 @@ class DataNodeClient:
         #Asks for its leader all the files it has.
         #So it has to LIST files directly with the leader address
         #Then it must GET all files from that node using the previous response.
-        file_list = self.stub.ListFiles();
+        file_list = self.stub.ListFiles()
 
         for file in file_list:
-            file_request = FileServicesStub.FileRequest(name=file["name"])
-            file_content = self.stub.GetFile(file_request)
+            try:
+                file_request = FileServicesStub.FileRequest(name=file.name)
+                file_content = self.stub.GetFile(file_request)
+                chunks = []
+                self.chunk_count = 0
+
+                for chunk in file_content.data:
+                    self.chunk_count += 1
+                    chunks.append(chunk)
+
+                FileServices.putFile(name=file_content.name, chunks=chunk)
+            except:
+                pass
             #Now with all the content, write each file (file_content has both name and data)
