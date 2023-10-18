@@ -124,7 +124,7 @@ class CLI:
 
         headers = ['Ruta']
 
-        unique = list(set(i for i in response.content))
+        unique = [[i[1]] for i in response.content]
 
         table = tabulate(unique, headers, tablefmt="pretty")
 
