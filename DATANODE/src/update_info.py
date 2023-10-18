@@ -1,7 +1,7 @@
 import grpc
 import protobufs.python.Add2Index_pb2 as Add2Index_pb2Stub
 import protobufs.python.Add2Index_pb2_grpc as Add2Index_pb2_grpc
-import protobufs.python.FileServices_pb2 as FileServices_pb2Stub
+import protobufs.python.FileServices_pb2 as FileServicesStub
 import protobufs.python.FileServices_pb2_grpc as FileServices_pb2_grpc
 import os
 import configparser
@@ -24,7 +24,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 class InfoClient:
     def __init__(self):
-        self.name_node = NameNodeClient(self.ip)
+        self.name_node = NameNodeClient()
         self.followers = []
         self.leader = None
         self.isLeader = False
@@ -54,7 +54,7 @@ class InfoClient:
 #Interactions with NameNode
 class NameNodeClient:
 
-    def __init__(self, ip):
+    def __init__(self):
         self.channel = grpc.insecure_channel(NAME_NODE_ADDRESS)
         self.stub = Add2Index_pb2_grpc.Add2IndexStub(self.channel)
         self.ip = self.__get_ip__
@@ -93,11 +93,19 @@ class DataNodeClient:
     def handle_redundancy_new_file(self, path, data):
         #He must send the file to this follower (destination_address).
         #So it must PUT the file. Build the message and send it.
-        return
+
+        file_content = FileServicesStub.FileContent(name="extract_from_path", data=data)
+        operation_status = self.stub.PutFile(file_content)
     
     #Pull strategy
     def handle_redundancy_boot(self):
+
         #Asks for its leader all the files it has.
         #So it has to LIST files directly with the leader address
         #Then it must GET all files from that node using the previous response.
-        return
+        file_list = self.stub.ListFiles();
+
+        for file in file_list:
+            file_request = FileServicesStub.FileRequest(name=file["name"])
+            file_content = self.stub.GetFile(file_request)
+            #Now with all the content, write each file (file_content has both name and data)
