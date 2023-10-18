@@ -122,7 +122,9 @@ class CLI:
             self.loader.add(3, "Listing files", lambda: self.__assign(response, self.client.list("list", data={"payload": "."})))
         )
 
-        headers = ['DataNode', 'Ruta']
+        headers = ['Ruta']
+
+        unique = [list(set(i[1] for i in response.content))]
 
         table = tabulate(response.content, headers, tablefmt="pretty")
 
