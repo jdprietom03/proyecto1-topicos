@@ -5,12 +5,14 @@ from typing import ClassVar as _ClassVar, Optional as _Optional
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class add2IndexRequest(_message.Message):
-    __slots__ = ["dataNodeIP", "path2Add"]
+    __slots__ = ["dataNodeIP", "path2Add", "isLeader"]
     DATANODEIP_FIELD_NUMBER: _ClassVar[int]
     PATH2ADD_FIELD_NUMBER: _ClassVar[int]
+    ISLEADER_FIELD_NUMBER: _ClassVar[int]
     dataNodeIP: str
     path2Add: str
-    def __init__(self, dataNodeIP: _Optional[str] = ..., path2Add: _Optional[str] = ...) -> None: ...
+    isLeader: bool
+    def __init__(self, dataNodeIP: _Optional[str] = ..., path2Add: _Optional[str] = ..., isLeader: bool = ...) -> None: ...
 
 class add2IndexResponse(_message.Message):
     __slots__ = ["statusCode"]

@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0f\x41\x64\x64\x32Index.proto\x12\tname_node\"8\n\x10\x61\x64\x64\x32IndexRequest\x12\x12\n\ndataNodeIP\x18\x01 \x01(\t\x12\x10\n\x08path2Add\x18\x02 \x01(\t\"\'\n\x11\x61\x64\x64\x32IndexResponse\x12\x12\n\nstatusCode\x18\x01 \x01(\x05\x32U\n\tAdd2Index\x12H\n\x0b\x61\x64\x64_2_index\x12\x1b.name_node.add2IndexRequest\x1a\x1c.name_node.add2IndexResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0f\x41\x64\x64\x32Index.proto\x12\tname_node\"J\n\x10\x61\x64\x64\x32IndexRequest\x12\x12\n\ndataNodeIP\x18\x01 \x01(\t\x12\x10\n\x08path2Add\x18\x02 \x01(\t\x12\x10\n\x08isLeader\x18\x03 \x01(\x08\"\'\n\x11\x61\x64\x64\x32IndexResponse\x12\x12\n\nstatusCode\x18\x01 \x01(\x05\x32U\n\tAdd2Index\x12H\n\x0b\x61\x64\x64_2_index\x12\x1b.name_node.add2IndexRequest\x1a\x1c.name_node.add2IndexResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -22,9 +22,9 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _globals['_ADD2INDEXREQUEST']._serialized_start=30
-  _globals['_ADD2INDEXREQUEST']._serialized_end=86
-  _globals['_ADD2INDEXRESPONSE']._serialized_start=88
-  _globals['_ADD2INDEXRESPONSE']._serialized_end=127
-  _globals['_ADD2INDEX']._serialized_start=129
-  _globals['_ADD2INDEX']._serialized_end=214
+  _globals['_ADD2INDEXREQUEST']._serialized_end=104
+  _globals['_ADD2INDEXRESPONSE']._serialized_start=106
+  _globals['_ADD2INDEXRESPONSE']._serialized_end=145
+  _globals['_ADD2INDEX']._serialized_start=147
+  _globals['_ADD2INDEX']._serialized_end=232
 # @@protoc_insertion_point(module_scope)

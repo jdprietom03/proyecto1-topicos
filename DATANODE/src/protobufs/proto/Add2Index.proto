@@ -5,6 +5,7 @@ package name_node;
 message add2IndexRequest {
     string dataNodeIP = 1;
     string path2Add = 2;
+    bool isLeader = 3;
 }
 
 message add2IndexResponse {
