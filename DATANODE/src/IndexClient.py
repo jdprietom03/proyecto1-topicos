@@ -4,6 +4,9 @@ import protobufs.python.Add2Index_pb2_grpc as Add2Index_pb2_grpc
 import os
 import configparser
 import urllib.request
+from dotenv import load_dotenv
+
+load_dotenv()
 
 config = configparser.ConfigParser()
 config.read(os.path.join(os.path.dirname(__file__), 'config', '.config'))
