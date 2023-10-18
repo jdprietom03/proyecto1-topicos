@@ -97,7 +97,7 @@ class DataNodeClient:
         return
     
     #Pull strategy
-    def handle_redundancy_boot(self, leader):
+    def handle_redundancy_boot(self):
         #Asks for its leader all the files it has.
         #So it has to LIST files directly with the leader address
         #Then it must GET all files from that node
